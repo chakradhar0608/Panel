@@ -42,9 +42,8 @@ const prodEnv = {
   NEXTAUTH_SECRET: 'minimum-32-char-secret-key-here',
   NEXTAUTH_URL: 'https://partnersnccamps.xyz',
   ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
-  ADMIN_EMAIL: 'nchakradharreddy0@gmail.com',
-  ADMIN_PASSWORD_HASH: '$2b$12$Ju5rodFqME/cHxUvUWGyhOZNv.J30UEQCuFOU1Ve9CCB1KFMUA4yi',
-  
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
   // App URLs
   NEXT_PUBLIC_MAIN_URL: 'https://partnersnccamps.xyz',
   NEXT_PUBLIC_BASE_URL: 'https://partnersnccamps.xyz',
