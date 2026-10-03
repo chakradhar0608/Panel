@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #F0F2F5;
+  color: #111827;
+}
+
+/* Custom input styles for light theme */
+@layer components {
+  .input {
+    @apply rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-textPrimary placeholder-brand-textMuted focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20;
+  }
+  
+  .select {
+    @apply rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-textPrimary focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20;
+  }
+  
+  .textarea {
+    @apply rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-textPrimary placeholder-brand-textMuted focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20;
+  }
+}
+
+/* Custom scrollbar utility for mobile tables */
+@layer utilities {
+  .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+    display: block !important;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+

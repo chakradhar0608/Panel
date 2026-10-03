@@ -1,0 +1,83 @@
+import { NextResponse } from 'next/server'
+import { db } from '@nccamp/db'
+import { parseOfferEvents } from '@/lib/offer-events'
+
+function detectDevice(ua: string | null): string {
+  if (!ua) return 'DESKTOP'
+  return /Mobile|Android|iPhone|iPad/i.test(ua) ? 'MOBILE' : 'DESKTOP'
+}
+
+function getIp(headers: Headers): string {
+  return (
+    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    headers.get('x-real-ip') ||
+    headers.get('cf-connecting-ip') ||
+    'unknown'
+  )
+}
+
+export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const offerId = Number(url.searchParams.get('o'))
+  const publisherId = Number(url.searchParams.get('a'))
+
+  if (!offerId || !publisherId || !Number.isInteger(offerId) || !Number.isInteger(publisherId)) {
+    return new Response('Invalid tracking link - missing o (offerId) or a (publisherId).', { status: 400 })
+  }
+
+  const [offer, publisher] = await Promise.all([
+    db.offer.findUnique({ where: { id: offerId } }),
+    db.publisher.findUnique({ where: { id: publisherId } }),
+  ])
+
+  if (!offer || offer.status !== 'ACTIVE') {
+    return new Response('Offer not available.', { status: 404 })
+  }
+  if (!publisher) {
+    return new Response('Invalid publisher.', { status: 404 })
+  }
+  if (!offer.affiliateUrl) {
+    return new Response('Offer has no affiliate URL configured.', { status: 422 })
+  }
+
+  const clickId = crypto.randomUUID()
+  const userAgent = req.headers.get('user-agent')
+
+  await db.$transaction(async (tx: any) => {
+    await tx.publisherOffer.upsert({
+      where: { publisherId_offerId: { publisherId, offerId } },
+      create: { publisherId, offerId },
+      update: {},
+    })
+
+    await tx.campLead.create({
+      data: {
+        campId: null,
+        publisherId,
+        offerId,
+        clickId,
+        p2: url.searchParams.get('p1') || null,
+        p3: url.searchParams.get('p2') || null,
+        p4: url.searchParams.get('p3') || null,
+        p5: url.searchParams.get('p4') || null,
+        sub1: null,
+        sub2: url.searchParams.get('p5') || null,
+        sub3: null,
+        userUpi: null,
+        mobileNumber: null,
+        status: 'CLICKED',
+        ipAddress: getIp(req.headers),
+        userAgent,
+        device: detectDevice(userAgent),
+        clickedAt: new Date(),
+      },
+    })
+  })
+
+  const { config } = parseOfferEvents(offer.events)
+  const userIdParam = config.affiliateUserIdParam || 'p1'
+  const separator = offer.affiliateUrl.includes('?') ? '&' : '?'
+  const redirectUrl = `${offer.affiliateUrl}${separator}${userIdParam}=${clickId}`
+
+  return NextResponse.redirect(redirectUrl, { status: 302 })
+}
