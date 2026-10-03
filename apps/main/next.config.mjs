@@ -15,7 +15,7 @@ const devEnv = {
   NEXTAUTH_URL: 'http://localhost:3000',
   ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
   ADMIN_EMAIL: 'nchakradharreddy0@gmail.com',
-  ADMIN_PASSWORD_HASH: '$2a$10$cE1Lg4ROwJKwkm1EQAa.zOjXqQVyLv1sbur74bszkEqS9xMRDWOMy',
+  ADMIN_PASSWORD_HASH: '$2b$12$Ju5rodFqME/cHxUvUWGyhOZNv.J30UEQCuFOU1Ve9CCB1KFMUA4yi',
 
   // App URLs
   NEXT_PUBLIC_MAIN_URL: 'http://localhost:3000',
@@ -42,8 +42,9 @@ const prodEnv = {
   NEXTAUTH_SECRET: 'minimum-32-char-secret-key-here',
   NEXTAUTH_URL: 'https://partnersnccamps.xyz',
   ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
-  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
+  ADMIN_EMAIL: 'nchakradharreddy0@gmail.com',
+  ADMIN_PASSWORD_HASH: '$2b$12$Ju5rodFqME/cHxUvUWGyhOZNv.J30UEQCuFOU1Ve9CCB1KFMUA4yi',
+  
   // App URLs
   NEXT_PUBLIC_MAIN_URL: 'https://partnersnccamps.xyz',
   NEXT_PUBLIC_BASE_URL: 'https://partnersnccamps.xyz',
