@@ -15,7 +15,8 @@ const devEnv = {
   NEXTAUTH_URL: 'http://localhost:3000',
   ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
   ADMIN_EMAIL: 'nchakradharreddy0@gmail.com',
-  ADMIN_PASSWORD_HASH: '$2b$12$Ju5rodFqME/cHxUvUWGyhOZNv.J30UEQCuFOU1Ve9CCB1KFMUA4yi',
+  ADMIN_PASSWORD_HASH:
+    '$2b$12$Ju5rodFqME/cHxUvUWGyhOZNv.J30UEQCuFOU1Ve9CCB1KFMUA4yi',
 
   // App URLs
   NEXT_PUBLIC_MAIN_URL: 'http://localhost:3000',
@@ -35,15 +36,19 @@ const prodEnv = {
   PORT: '3000',
 
   // Database
-  DATABASE_URL: 'mysql://bsptsyni_charan:charan%2330@localhost:3306/bsptsyni_ncpartners',
+  DATABASE_URL:
+    'mysql://bsptsyni_charan:charan%2330@localhost:3306/bsptsyni_ncpartners',
   DB_AUTO_SYNC: 'true',
 
   // Auth
   NEXTAUTH_SECRET: 'minimum-32-char-secret-key-here',
   NEXTAUTH_URL: 'https://partnersnccamps.xyz',
   ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
+
+  // Get these from Vercel Environment Variables
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
+
   // App URLs
   NEXT_PUBLIC_MAIN_URL: 'https://partnersnccamps.xyz',
   NEXT_PUBLIC_BASE_URL: 'https://partnersnccamps.xyz',
@@ -54,27 +59,36 @@ const prodEnv = {
 
   // Email
   GMAIL_USER: 'support@nccamp.in',
-  GMAIL_APP_PASSWORD: ' your actual gmail app password',
+  GMAIL_APP_PASSWORD: 'your actual gmail app password',
 }
 
 const nextConfig = {
   reactStrictMode: true,
+
   optimizeFonts: false,
+
+  // IMPORTANT:
+  // Keep Sequelize external, but DO NOT externalize mysql2.
+  // This allows Next.js/Vercel to bundle mysql2 correctly.
   experimental: {
-    serverComponentsExternalPackages: ['sequelize', 'mysql2'],
+    serverComponentsExternalPackages: ['sequelize'],
   },
+
   webpack: (config) => {
     config.module.exprContextCritical = false
+
     return config
   },
+
   typescript: {
     ignoreBuildErrors: true,
   },
+
   eslint: {
     ignoreDuringBuilds: true,
   },
 
-  // Automatically picks dev or prod vars based on NODE_ENV
+  // Automatically picks dev or production variables
   env: isProd ? prodEnv : devEnv,
 }
 
