@@ -7,28 +7,46 @@ const devEnv = {
   PORT: '3000',
 
   // Database
-  DATABASE_URL: 'mysql://root:charan%2330@127.0.0.1:3306/nccamp_dev',
+  DATABASE_URL:
+    'mysql://root:YOUR_LOCAL_PASSWORD@127.0.0.1:3306/nccamp_dev',
   DB_AUTO_SYNC: 'true',
 
   // Auth
-  NEXTAUTH_SECRET: 'minimum-32-char-secret-key-here',
-  NEXTAUTH_URL: 'http://localhost:3000',
-  ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
-  ADMIN_EMAIL: 'nchakradharreddy0@gmail.com',
+  NEXTAUTH_SECRET:
+    'minimum-32-char-secret-key-here',
+
+  NEXTAUTH_URL:
+    'http://localhost:3000',
+
+  ADMIN_JWT_SECRET:
+    'different-secret-for-admin-panel',
+
+  ADMIN_EMAIL:
+    'nchakradharreddy0@gmail.com',
+
   ADMIN_PASSWORD_HASH:
-    '$2b$12$Ju5rodFqME/cHxUvUWGyhOZNv.J30UEQCuFOU1Ve9CCB1KFMUA4yi',
+    process.env.ADMIN_PASSWORD_HASH,
 
   // App URLs
-  NEXT_PUBLIC_MAIN_URL: 'http://localhost:3000',
-  NEXT_PUBLIC_BASE_URL: 'http://localhost:3000',
+  NEXT_PUBLIC_MAIN_URL:
+    'http://localhost:3000',
+
+  NEXT_PUBLIC_BASE_URL:
+    'http://localhost:3000',
 
   // Telegram
-  TELEGRAM_BOT_TOKEN: '7570376985:AAH5Us-TZabBEmplb_rdDEPflk1yFqoWKyE',
-  TELEGRAM_ADMIN_CHAT_ID: '667801339',
+  TELEGRAM_BOT_TOKEN:
+    process.env.TELEGRAM_BOT_TOKEN,
+
+  TELEGRAM_ADMIN_CHAT_ID:
+    process.env.TELEGRAM_ADMIN_CHAT_ID,
 
   // Email
-  GMAIL_USER: 'support@nccamp.in',
-  GMAIL_APP_PASSWORD: 'gmail-app-password',
+  GMAIL_USER:
+    process.env.GMAIL_USER,
+
+  GMAIL_APP_PASSWORD:
+    process.env.GMAIL_APP_PASSWORD,
 }
 
 // ── Production variables ───────────────────────────────────────────────────
@@ -36,30 +54,49 @@ const prodEnv = {
   PORT: '3000',
 
   // Database
+  // Add DATABASE_URL in Vercel Environment Variables
   DATABASE_URL:
-    'mysql://bsptsyni_charan:charan%2330@localhost:3306/bsptsyni_ncpartners',
-  DB_AUTO_SYNC: 'true',
+    process.env.DATABASE_URL,
+
+  DB_AUTO_SYNC:
+    'false',
 
   // Auth
-  NEXTAUTH_SECRET: 'minimum-32-char-secret-key-here',
-  NEXTAUTH_URL: 'https://partnersnccamps.xyz',
-  ADMIN_JWT_SECRET: 'different-secret-for-admin-panel',
+  NEXTAUTH_SECRET:
+    process.env.NEXTAUTH_SECRET,
 
-  // Get these from Vercel Environment Variables
-  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-  ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
+  NEXTAUTH_URL:
+    process.env.NEXTAUTH_URL,
+
+  ADMIN_JWT_SECRET:
+    process.env.ADMIN_JWT_SECRET,
+
+  ADMIN_EMAIL:
+    process.env.ADMIN_EMAIL,
+
+  ADMIN_PASSWORD_HASH:
+    process.env.ADMIN_PASSWORD_HASH,
 
   // App URLs
-  NEXT_PUBLIC_MAIN_URL: 'https://partnersnccamps.xyz',
-  NEXT_PUBLIC_BASE_URL: 'https://partnersnccamps.xyz',
+  NEXT_PUBLIC_MAIN_URL:
+    process.env.NEXT_PUBLIC_MAIN_URL,
+
+  NEXT_PUBLIC_BASE_URL:
+    process.env.NEXT_PUBLIC_BASE_URL,
 
   // Telegram
-  TELEGRAM_BOT_TOKEN: '7570376985:AAH5Us-TZabBEmplb_rdDEPflk1yFqoWKyE',
-  TELEGRAM_ADMIN_CHAT_ID: '667801339',
+  TELEGRAM_BOT_TOKEN:
+    process.env.TELEGRAM_BOT_TOKEN,
+
+  TELEGRAM_ADMIN_CHAT_ID:
+    process.env.TELEGRAM_ADMIN_CHAT_ID,
 
   // Email
-  GMAIL_USER: 'support@nccamp.in',
-  GMAIL_APP_PASSWORD: 'your actual gmail app password',
+  GMAIL_USER:
+    process.env.GMAIL_USER,
+
+  GMAIL_APP_PASSWORD:
+    process.env.GMAIL_APP_PASSWORD,
 }
 
 const nextConfig = {
@@ -68,8 +105,12 @@ const nextConfig = {
   optimizeFonts: false,
 
   // IMPORTANT:
-  // Keep Sequelize external, but DO NOT externalize mysql2.
-  // This allows Next.js/Vercel to bundle mysql2 correctly.
+  // Keep Sequelize external.
+  // DO NOT externalize mysql2.
+  //
+  // This allows Next.js/Vercel to bundle mysql2
+  // instead of Sequelize trying to load it from
+  // the external runtime.
   experimental: {
     serverComponentsExternalPackages: ['sequelize'],
   },
@@ -88,7 +129,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // Automatically picks dev or production variables
+  // Automatically select development or production variables
   env: isProd ? prodEnv : devEnv,
 }
 
