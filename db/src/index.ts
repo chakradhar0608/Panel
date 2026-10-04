@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import dotenv from 'dotenv'
+import mysql2 from 'mysql2'
 import { Sequelize, DataTypes, Op, literal } from 'sequelize'
 
 function loadEnvForMonorepo() {
@@ -49,6 +50,7 @@ export const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
   port: dbPort,
   dialect: 'mysql',
+  dialectModule: mysql2,
   logging: false,
 })
 
