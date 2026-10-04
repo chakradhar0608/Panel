@@ -569,7 +569,7 @@ function createClient(transaction?: any) {
   return client
 }
 
-const globalForDb = globalThis as unknow  
+const globalForDb = globalThis as unknown as {
   db: any
 }
 
