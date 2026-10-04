@@ -24,10 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return
     }
 
-    const tokenExists = document.cookie.split('; ').some((item) => item.startsWith('admin_token='))
-    if (!tokenExists) {
-      router.replace('/admin/login')
-      return
+   fetch('/api/admin/auth/me', { cache: 'no-store' })
     }
 
     fetch('/api/admin/auth/me', { cache: 'no-store' })
