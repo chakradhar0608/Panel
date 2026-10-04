@@ -19,37 +19,29 @@ export async function POST(req: Request) {
       )
     }
 
-    const envEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase()
-    const envPasswordHash = process.env.ADMIN_PASSWORD_HASH || ''
+    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase()
+    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH || ''
 
-    const isEnvAdmin =
-      !!envEmail &&
-      !!envPasswordHash &&
-      envEmail === email
+    if (!adminEmail || !adminPasswordHash) {
+      console.error('Admin environment variables are missing')
 
-    let admin: any = null
-
-    // Only load the database when environment-admin login is not being used
-    if (!isEnvAdmin) {
-      const { db } = await import('@nccamp/db')
-
-      admin = await db.adminUser.findUnique({
-        where: { email },
-      })
+      return NextResponse.json(
+        { error: 'ADMIN_CONFIG_MISSING' },
+        { status: 500 }
+      )
     }
 
-    const passwordHash = isEnvAdmin
-      ? envPasswordHash
-      : admin?.passwordHash || ''
-
-    if (!passwordHash) {
+    if (email !== adminEmail) {
       return NextResponse.json(
         { error: 'INVALID_CREDENTIALS' },
         { status: 401 }
       )
     }
 
-    const valid = await bcrypt.compare(password, passwordHash)
+    const valid = await bcrypt.compare(
+      password,
+      adminPasswordHash
+    )
 
     if (!valid) {
       return NextResponse.json(
@@ -58,15 +50,10 @@ export async function POST(req: Request) {
       )
     }
 
-    const sessionPayload = isEnvAdmin
-      ? {
-          adminId: 'env-admin',
-          email: envEmail,
-        }
-      : {
-          adminId: admin.id,
-          email: admin.email,
-        }
+    const sessionPayload = {
+      adminId: 'env-admin',
+      email: adminEmail,
+    }
 
     const response = NextResponse.json({
       success: true,
@@ -85,6 +72,9 @@ export async function POST(req: Request) {
     )
 
     response.cookies.set('admin_token', '1', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
       path: '/',
       maxAge: 60 * 60 * 24,
     })
