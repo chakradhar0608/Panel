@@ -19,11 +19,15 @@ export async function POST(req: Request) {
       )
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase()
-    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH || ''
+    const adminEmail = process.env.ADMIN_EMAIL
+      ?.trim()
+      .toLowerCase()
+
+    const adminPasswordHash =
+      process.env.ADMIN_PASSWORD_HASH || ''
 
     if (!adminEmail || !adminPasswordHash) {
-      console.error('Admin environment variables are missing')
+      console.error('ADMIN_EMAIL or ADMIN_PASSWORD_HASH is missing')
 
       return NextResponse.json(
         { error: 'ADMIN_CONFIG_MISSING' },
@@ -50,8 +54,10 @@ export async function POST(req: Request) {
       )
     }
 
+    // Environment admin session.
+    // Do NOT include adminId because that would trigger
+    // a database lookup later.
     const sessionPayload = {
-      adminId: 'env-admin',
       email: adminEmail,
     }
 
