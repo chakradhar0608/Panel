@@ -24,8 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return
     }
 
-   fetch('/api/admin/auth/me', { cache: 'no-store' })
-    }
+  
 
     fetch('/api/admin/auth/me', { cache: 'no-store' })
       .then(async (res) => {
